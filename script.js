@@ -41,19 +41,13 @@ let currentMood    = null;   // Currently selected mood key
 let currentMovies  = [];     // List of movies currently displayed
 let favorites      = [];     // User's saved favorites (synced to localStorage)
 
-// ============================================================
-// 🚀 INITIALIZATION
-// Runs when the page loads
-// ============================================================
+
 (function init() {
   loadFavorites();         // Pull favorites from localStorage
   updateFavCount();        // Refresh the badge in the nav
 })();
 
-// ============================================================
-// 🎭 MOOD SELECTION
-// Called when a mood button is clicked
-// ============================================================
+
 function selectMood(mood) {
   currentMood = mood;
 
@@ -75,10 +69,6 @@ function selectMood(mood) {
   fetchMovies(genre, "", "", "");
 }
 
-// ============================================================
-// 🔍 SEARCH TRIGGER
-// Called when user clicks Search or presses Enter
-// ============================================================
 function triggerSearch() {
   if (!currentMood) {
     showError("Please select a mood first!");
@@ -107,10 +97,7 @@ function clearFilters() {
   }
 }
 
-// ============================================================
-// 🌐 FETCH MOVIES FROM OMDB API
-// Uses the OMDb search endpoint (returns multiple results)
-// ============================================================
+
 async function fetchMovies(genre, keyword, year, type) {
   // Build the search query: prefer keyword, fallback to genre
   const query = keyword ? `${keyword} ${genre}` : genre;
@@ -160,10 +147,7 @@ async function fetchMovies(genre, keyword, year, type) {
   }
 }
 
-// ============================================================
-// 🎬 RENDER MOVIE CARDS
-// Builds and injects movie card HTML into the DOM
-// ============================================================
+
 function renderMovies(movies) {
   const grid         = document.getElementById("movieGrid");
   const section      = document.getElementById("resultsSection");
@@ -191,9 +175,7 @@ function renderMovies(movies) {
   section.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-// ============================================================
-// 🃏 CREATE A SINGLE MOVIE CARD (DOM element)
-// ============================================================
+
 function createMovieCard(movie, moodInfo, isFav) {
   const card = document.createElement("div");
   card.className = "movie-card";
@@ -238,10 +220,7 @@ function createMovieCard(movie, moodInfo, isFav) {
   return card;
 }
 
-// ============================================================
-// ❤️ FAVORITES LOGIC
-// Add/remove movies to localStorage-backed favorites list
-// ============================================================
+
 
 /** Load favorites from localStorage on startup */
 function loadFavorites() {
@@ -331,9 +310,7 @@ function clearAllFavorites() {
   }
 }
 
-// ============================================================
-// ❤️ RENDER FAVORITES PAGE
-// ============================================================
+
 function renderFavorites() {
   const grid  = document.getElementById("favoritesGrid");
   const empty = document.getElementById("emptyFavorites");
@@ -355,12 +332,9 @@ function renderFavorites() {
   });
 }
 
-// ============================================================
-// 👫 WATCH TOGETHER LOGIC
-// Two people each pick a mood; we blend them into one query
-// ============================================================
 
-// State for each person's selected mood
+
+
 const togetherState = { 1: null, 2: null };
 
 /**
@@ -529,10 +503,7 @@ function showTogetherError(message) {
   document.getElementById("togetherError").classList.add("visible");
 }
 
-// ============================================================
-// 🗂️ SECTION NAVIGATION
-// Toggles between Discover, Together, and Favorites views
-// ============================================================
+
 function showSection(name) {
   // Hide all sections
   document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
@@ -552,9 +523,7 @@ function showSection(name) {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-// ============================================================
-// 🔧 UI HELPERS
-// ============================================================
+
 
 function showLoader(visible) {
   document.getElementById("loader").classList.toggle("visible", visible);
