@@ -2,7 +2,8 @@
 
 A beautiful, responsive web app that recommends movies based on how you're feeling. It uses the OMDb API.
 
-![MoodFlicks Preview](https://via.placeholder.com/800x400?text=MoodFlicks+Preview)
+#Live demo
+https://movie-mood-app-cyan.vercel.app/
 
 ## Features
 
