@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MoodFlicks — Movie Recommender</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Bebas Neue for display, DM Sans for body -->
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">🎬</span>
+        <span class="logo-text">MoodFlicks</span>
+      </div>
+      <nav class="header-nav">
+        <button class="nav-btn active" id="navDiscover" onclick="showSection('discover')">Discover</button>
+        <button class="nav-btn" id="navTogether" onclick="showSection('together')">👫 Watch Together</button>
+        <button class="nav-btn" id="navFavorites" onclick="showSection('favorites')">
+          Favorites <span class="fav-count" id="favCount">0</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ===== DISCOVER SECTION ===== -->
+  <main id="sectionDiscover" class="section active">
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="hero-bg"></div>
+      <div class="hero-content">
+        <p class="hero-eyebrow">What are you feeling tonight?</p>
+        <h1 class="hero-title">Your mood.<br/>Your movies.</h1>
+        <p class="hero-subtitle">Pick a vibe and we'll find the perfect films for your moment.</p>
+      </div>
+    </section>
+
+    <!-- Mood Selector -->
+    <section class="mood-section">
+      <h2 class="section-label">Choose your mood</h2>
+      <div class="mood-grid" id="moodGrid">
+        <button class="mood-btn" data-mood="happy" onclick="selectMood('happy')">
+          <span class="mood-emoji">😄</span>
+          <span class="mood-name">Happy</span>
+          <span class="mood-genre">Comedy</span>
+        </button>
+        <button class="mood-btn" data-mood="sad" onclick="selectMood('sad')">
+          <span class="mood-emoji">😢</span>
+          <span class="mood-name">Sad</span>
+          <span class="mood-genre">Drama</span>
+        </button>
+        <button class="mood-btn" data-mood="angry" onclick="selectMood('angry')">
+          <span class="mood-emoji">😤</span>
+          <span class="mood-name">Angry</span>
+          <span class="mood-genre">Action</span>
+        </button>
+        <button class="mood-btn" data-mood="relaxed" onclick="selectMood('relaxed')">
+          <span class="mood-emoji">😌</span>
+          <span class="mood-name">Relaxed</span>
+          <span class="mood-genre">Romance</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Search & Filter Bar -->
+    <section class="search-section" id="searchSection">
+      <div class="search-bar">
+        <span class="search-icon">🔍</span>
+        <input
+          type="text"
+          id="searchInput"
+          class="search-input"
+          placeholder="Refine with a keyword... (e.g. 'space', 'love', 'war')"
+          onkeydown="handleSearchKey(event)"
+        />
+        <button class="search-btn" onclick="triggerSearch()">Search</button>
+      </div>
+      <div class="filter-bar">
+        <label class="filter-label">Year:</label>
+        <select id="filterYear" class="filter-select">
+          <option value="">Any</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
+          <option value="2018">2018</option>
+          <option value="2015">2015</option>
+          <option value="2010">2010</option>
+          <option value="2000">2000</option>
+        </select>
+        <label class="filter-label">Type:</label>
+        <select id="filterType" class="filter-select">
+          <option value="">All</option>
+          <option value="movie">Movie</option>
+          <option value="series">Series</option>
+        </select>
+        <button class="clear-btn" onclick="clearFilters()">✕ Clear</button>
+      </div>
+    </section>
+
+    <!-- Loading Indicator -->
+    <div class="loader" id="loader">
+      <div class="loader-dots">
+        <span></span><span></span><span></span>
+      </div>
+      <p class="loader-text">Finding films for your mood...</p>
+    </div>
+
+    <!-- Error Message -->
+    <div class="error-msg" id="errorMsg">
+      <span class="error-icon">⚠️</span>
+      <p id="errorText">Something went wrong. Please try again.</p>
+    </div>
+
+    <!-- Results Section -->
+    <section class="results-section" id="resultsSection">
+      <div class="results-header">
+        <h2 class="results-title" id="resultsTitle">Results</h2>
+        <span class="results-count" id="resultsCount"></span>
+      </div>
+      <div class="movie-grid" id="movieGrid"></div>
+    </section>
+
+  </main>
+
+  <!-- ===== WATCH TOGETHER SECTION ===== -->
+  <section id="sectionTogether" class="section">
+
+    <div class="together-hero">
+      <div class="together-hero-bg"></div>
+      <div class="together-hero-content">
+        <p class="hero-eyebrow">Two people. One perfect movie.</p>
+        <h1 class="hero-title">Watch<br/>Together</h1>
+        <p class="hero-subtitle">Each person picks their mood — we'll find the perfect film for both of you.</p>
+      </div>
+    </div>
+
+    <!-- Two Person Mood Pickers -->
+    <div class="together-pickers">
+
+      <!-- Person 1 -->
+      <div class="person-picker" id="picker1">
+        <div class="person-header">
+          <span class="person-avatar">🧑</span>
+          <div>
+            <h3 class="person-title">Person 1</h3>
+            <input type="text" class="person-name-input" id="name1" placeholder="Enter your name..." value="Person 1" />
+          </div>
+        </div>
+        <p class="person-prompt">How are you feeling?</p>
+        <div class="mini-mood-grid" id="moodGrid1">
+          <button class="mini-mood-btn" data-mood="happy" onclick="selectPersonMood(1, 'happy')">😄<span>Happy</span></button>
+          <button class="mini-mood-btn" data-mood="sad"   onclick="selectPersonMood(1, 'sad')">😢<span>Sad</span></button>
+          <button class="mini-mood-btn" data-mood="angry" onclick="selectPersonMood(1, 'angry')">😤<span>Angry</span></button>
+          <button class="mini-mood-btn" data-mood="relaxed" onclick="selectPersonMood(1, 'relaxed')">😌<span>Relaxed</span></button>
+        </div>
+        <div class="person-selected" id="selected1">
+          <span class="selected-emoji" id="selectedEmoji1">—</span>
+          <span class="selected-label" id="selectedLabel1">No mood selected</span>
+        </div>
+      </div>
+
+      <!-- VS Divider -->
+      <div class="vs-divider">
+        <div class="vs-line"></div>
+        <span class="vs-text">VS</span>
+        <div class="vs-line"></div>
+      </div>
+
+      <!-- Person 2 -->
+      <div class="person-picker" id="picker2">
+        <div class="person-header">
+          <span class="person-avatar">🧑</span>
+          <div>
+            <h3 class="person-title">Person 2</h3>
+            <input type="text" class="person-name-input" id="name2" placeholder="Enter your name..." value="Person 2" />
+          </div>
+        </div>
+        <p class="person-prompt">How are you feeling?</p>
+        <div class="mini-mood-grid" id="moodGrid2">
+          <button class="mini-mood-btn" data-mood="happy" onclick="selectPersonMood(2, 'happy')">😄<span>Happy</span></button>
+          <button class="mini-mood-btn" data-mood="sad"   onclick="selectPersonMood(2, 'sad')">😢<span>Sad</span></button>
+          <button class="mini-mood-btn" data-mood="angry" onclick="selectPersonMood(2, 'angry')">😤<span>Angry</span></button>
+          <button class="mini-mood-btn" data-mood="relaxed" onclick="selectPersonMood(2, 'relaxed')">😌<span>Relaxed</span></button>
+        </div>
+        <div class="person-selected" id="selected2">
+          <span class="selected-emoji" id="selectedEmoji2">—</span>
+          <span class="selected-label" id="selectedLabel2">No mood selected</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Combined Mood Result Banner -->
+    <div class="combined-banner" id="combinedBanner">
+      <div class="combined-inner">
+        <p class="combined-label">Your combined vibe</p>
+        <div class="combined-moods" id="combinedMoods"></div>
+        <p class="combined-genre" id="combinedGenre"></p>
+        <button class="find-together-btn" id="findTogetherBtn" onclick="fetchTogetherMovies()">
+          🎬 Find Movies For Both of Us
+        </button>
+      </div>
+    </div>
+
+    <!-- Together Loader -->
+    <div class="loader" id="togetherLoader">
+      <div class="loader-dots"><span></span><span></span><span></span></div>
+      <p class="loader-text">Finding the perfect movie for both of you...</p>
+    </div>
+
+    <!-- Together Error -->
+    <div class="error-msg" id="togetherError">
+      <span class="error-icon">⚠️</span>
+      <p id="togetherErrorText">Something went wrong.</p>
+    </div>
+
+    <!-- Together Results -->
+    <section class="results-section" id="togetherResults">
+      <div class="results-header">
+        <h2 class="results-title" id="togetherTitle">🍿 Perfect for Both</h2>
+        <span class="results-count" id="togetherCount"></span>
+      </div>
+      <div class="movie-grid" id="togetherGrid"></div>
+    </section>
+
+  </section>
+
+  <!-- ===== FAVORITES SECTION ===== -->
+  <section id="sectionFavorites" class="section">
+    <div class="favorites-header">
+      <h2 class="fav-title">❤️ Your Favorites</h2>
+      <p class="fav-subtitle">Movies you've saved for later</p>
+      <button class="clear-all-btn" onclick="clearAllFavorites()">Clear All</button>
+    </div>
+    <div class="movie-grid" id="favoritesGrid"></div>
+    <div class="empty-state" id="emptyFavorites">
+      <span class="empty-icon">🎞️</span>
+      <p>No favorites yet. Start exploring and add some!</p>
+      <button class="nav-btn" onclick="showSection('discover')">← Browse Movies</button>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="site-footer">
+    <p>Built with ❤️ using <a href="https://www.omdbapi.com/" target="_blank">OMDb API</a> · MoodFlicks © 2025</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
