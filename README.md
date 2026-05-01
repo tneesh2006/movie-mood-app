@@ -62,3 +62,8 @@ You can also use the VS Code Live Server extension for a better development expe
 ## License
 
 MIT — free to use, modify, and share.
+##  Future Improvements
+- AI-based recommendation system
+- User authentication
+- Backend integration
+- Watch history tracking
